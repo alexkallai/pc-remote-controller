@@ -1,5 +1,6 @@
 import pystray
 import PIL.Image
+import sys
 
 image = PIL.Image.open("src/remote_icon.png")
 icon_hint = "PC remote controller"
@@ -9,6 +10,9 @@ def click_handler(icon, item):
         print("Did something!")
     if str(item) == "Exit":
         trayapp.stop()
+        sys.exit()
+
+
 
 menu_structure = pystray.Menu(
     pystray.MenuItem("Do something", click_handler),
@@ -16,5 +20,5 @@ menu_structure = pystray.Menu(
 )
 trayapp = pystray.Icon("Remote", image, icon_hint, menu=menu_structure)
 
-print("Tray icon starting!")
-trayapp.run()
+#print("Tray icon starting!")
+#trayapp.run()

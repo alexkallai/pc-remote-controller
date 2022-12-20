@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, make_response, url_for
 from configparser import ConfigParser
 import apihandler
 import qrcodeprinter
+import trayapp
+import threading
 
 
 config = ConfigParser()
@@ -30,5 +32,7 @@ if __name__ == "__main__":
     HOST = config["general"]["HOST"]
     PORT = config["general"]["PORT"]
     qrcodeprinter.prepare_qr_code_info(HOST, PORT)
+    # Start the tray icon on a separate thread
+    threading.Thread(target=trayapp.trayapp.run).start()
+    # Then starting the webserver
     app.run(host=HOST, port=PORT, debug=True)
-    #import trayapp
