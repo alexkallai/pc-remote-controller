@@ -1,6 +1,7 @@
 # Windows PC remote controller
 Control a Windows PC without client app, using a web server
-Current features are:
+
+### Current features are:
 
 - mouse control with dedicated buttons for mouse buttons
 multitouch support (for zoom and gestures) not implemented yet
