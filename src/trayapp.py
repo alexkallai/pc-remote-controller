@@ -16,4 +16,5 @@ menu_structure = pystray.Menu(
 )
 trayapp = pystray.Icon("Remote", image, icon_hint, menu=menu_structure)
 
+print("Tray icon starting!")
 trayapp.run()

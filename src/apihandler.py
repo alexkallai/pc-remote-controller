@@ -2,6 +2,7 @@ import time
 import mouse
 from pynput.keyboard import Key, Controller
 from configparser import ConfigParser
+import json
 
 config = ConfigParser()
 config.read("settings.cfg")
@@ -14,6 +15,13 @@ config.read("settings.cfg")
 LOG_FUNCTIONALITY = True
 COORDINATE_MULTIPLIER = float(config["mouse"]["speed_multiplier"])
 DOUBLE_CLICK_TIME_DELAY = float(config["mouse"]["double_click_time_delay"])
+
+class EventHandler:
+
+    def __init__(self, current_event) -> None:
+        #self.current_event = current_event
+        pass
+th = EventHandler
 
 def zeroGlobalVars():
     #print("LOG: ZEROING GLOBAL VARIABLES")
@@ -125,3 +133,72 @@ def mediaButtonHandler():
     if th.currentEvent ==  "closeprogram"  : pressOnKeyboard( [Key.alt, Key.f4] )
     if th.currentEvent ==  "fullscreen"    : pressOnKeyboard( [Key.alt, Key.enter] )
     if th.currentEvent ==  "changefocus"   : pressOnKeyboard( [Key.alt, Key.tab] )
+
+#Handles the requests
+def api_handler(message):
+    global th
+    messageDict = message
+
+    th.currentEvent = messageDict['eventType']
+    print(messageDict)
+    # Mousemove events
+    if ( th.currentEvent == "touchstart"  or
+         th.currentEvent == "touchend"    or
+         th.currentEvent == "touchmove"   or
+         th.currentEvent == "touchcancel" ):
+        th.currentXArray = messageDict['xCoordinateArray'] if "xCoordinateArray" in messageDict else []
+        th.currentYArray = messageDict['yCoordinateArray'] if "yCoordinateArray" in messageDict else []
+        th.currentTouchIDArray = messageDict['coordinateIdentifier'] if "coordinateIdentifier" in messageDict else []
+
+        touchEventHandler()
+        return
+
+    # Mouse button events
+    if ( th.currentEvent == "leftclick"   or
+            th.currentEvent == "rightclick"  or
+            th.currentEvent == "midclick"):
+        mouseButtonHandler()
+        return
+
+    # Keyboard button events
+    if ( 
+            th.currentEvent ==   "enter"        or
+            th.currentEvent ==   "backspace"    or
+            th.currentEvent ==   "delete"       or
+            th.currentEvent ==   "home"         or
+            th.currentEvent ==   "end"          or
+            th.currentEvent ==   "pageup"       or
+            th.currentEvent ==   "pagedown"     or
+            th.currentEvent ==   "printscreen"  or
+            th.currentEvent ==   "copy"         or
+            th.currentEvent ==   "paste"        or
+            th.currentEvent ==   "desktop"      or
+            th.currentEvent ==   "contextmenu"  or
+            th.currentEvent ==   "undo"         or 
+            th.currentEvent ==   "uparrow"      or 
+            th.currentEvent ==   "selectall"    or 
+            th.currentEvent ==   "leftarrow"    or 
+            th.currentEvent ==   "downarrow"    or 
+            th.currentEvent ==   "rightarrow"  
+            ):
+        keyboardButtonHandler()
+        return
+
+
+    # Multimedia button events
+    if ( 
+            th.currentEvent ==  "playpause"     or
+            th.currentEvent ==  "escape"        or
+            th.currentEvent ==  "previous"      or
+            th.currentEvent ==  "fullscreen_yt" or
+            th.currentEvent ==  "next"          or
+            th.currentEvent ==  "volumeup"      or
+            th.currentEvent ==  "mute"          or
+            th.currentEvent ==  "volumedown"    or
+            th.currentEvent ==  "open"          or
+            th.currentEvent ==  "closeprogram"  or
+            th.currentEvent ==  "fullscreen"    or 
+            th.currentEvent ==  "changefocus"   
+            ):
+            mediaButtonHandler()
+            return

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, url_for
 from configparser import ConfigParser
 import apihandler
 import qrcodeprinter
@@ -20,6 +20,8 @@ def home():
 def api_handler():
     if request.method == "POST":
         postrequest = request.get_json()
+        print(postrequest)
+        apihandler.api_handler(postrequest)
     # TODO: understand why return is necessary
     return make_response()
 
@@ -29,3 +31,4 @@ if __name__ == "__main__":
     PORT = config["general"]["PORT"]
     qrcodeprinter.prepare_qr_code_info(HOST, PORT)
     app.run(host=HOST, port=PORT, debug=True)
+    #import trayapp
