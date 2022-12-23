@@ -1,46 +1,31 @@
-import sys
-if sys.platform.startswith("win32"):
-    import mouse
-if sys.platform.startswith("linux"):
-    import shutil
-    from subprocess import run
-    if not shutil.which("xdotool"):
-        print("xdotool is not found with the which command, please install before running")
-        quit()
+from pynput.mouse import Controller, Button
 
-# Wrapper class for mouse using xdotools
-class Mousewrapper:
+class MousePynputWrapper:
 
     def __init__(self) -> None:
-        self.left = 1
-        self.middle = 2
-        self.right = 3
-        self.wheel_up = 4
-        self.wheel_down = 5
+        self.mousecontroller = Controller()
 
         self.buttonmap = {
-            "left": self.left,
-            "right": self.right,
-            "middle": self.middle,
-            "wheel_up": self.wheel_up,
-            "wheel_down": self.wheel_down
+            "left": Button.left,
+            "right": Button.right,
+            "middle": Button.middle
         }
 
     def release(self, button="left"):
-        run(["xdotool", "mouseup", f"{self.buttonmap[button]}"])
+        self.mousecontroller.release(self.buttonmap[button])
 
     def press(self, button="left"):
-        run(["xdotool", "mousedown", f"{self.buttonmap[button]}"])
+        self.mousecontroller.press(self.buttonmap[button])
 
     def click(self, button="left"):
-        run(["xdotool", "click", f"{self.buttonmap[button]}"])
+        self.mousecontroller.click(self.buttonmap[button], 1)
 
     def move(self, x, y, absolute=False, duration=0):
         if absolute == False:
-            run(["xdotool", "mousemove_relative", "--", f"{x}", f"{y}"])
+            self.mousecontroller.move(x, y)
         if absolute == True:
-            run(["xdotool", "mousemove", f"{x}", f"{y}"])
+            self.mousecontroller.position = (x, y)
 
     def scroll(self, y):
-        # TODO
-        pass
+        # rist arg is the horizontal, second is the vertical scroll
+        self.mousecontroller.scroll(0, y)

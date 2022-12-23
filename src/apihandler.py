@@ -2,7 +2,8 @@ import time
 import sys
 if sys.platform.startswith("linux"):
     import mousehandler
-    mouse = mousehandler.Mousewrapper()
+    # TODO: if this is working with Windows, then refactor accordingly (remove mouse package dep)
+    mouse = mousehandler.MousePynputWrapper()
 if sys.platform.startswith("win32"):
     import mouse
 from pynput.keyboard import Controller
