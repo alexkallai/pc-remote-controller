@@ -1,8 +1,14 @@
 import time
-import mouse
-from pynput.keyboard import Key, Controller
+import sys
+if sys.platform.startswith("linux"):
+    import mousehandler
+    mouse = mousehandler.Mousewrapper()
+if sys.platform.startswith("win32"):
+    import mouse
+from pynput.keyboard import Controller
+from pynput.keyboard import Key
 from configparser import ConfigParser
-import json
+
 
 config = ConfigParser()
 config.read("settings.cfg")
