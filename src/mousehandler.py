@@ -37,7 +37,7 @@ class Mousewrapper:
 
     def move(self, x, y, absolute=False, duration=0):
         if absolute == False:
-            run(["xdotool", "mousemove_relative", f"{x}", f"{y}"])
+            run(["xdotool", "mousemove_relative", "--", f"{x}", f"{y}"])
         if absolute == True:
             run(["xdotool", "mousemove", f"{x}", f"{y}"])
 
