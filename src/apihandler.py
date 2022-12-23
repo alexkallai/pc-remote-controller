@@ -11,16 +11,34 @@ config.read("settings.cfg")
 #                   y horizontal, increasing top to bottom
 # (the canvas coordinates are the same)
 
-# CONFIGURATION VARIABLES
-LOG_FUNCTIONALITY = True
 COORDINATE_MULTIPLIER = float(config["mouse"]["speed_multiplier"])
 DOUBLE_CLICK_TIME_DELAY = float(config["mouse"]["double_click_time_delay"])
 
 class EventHandler:
 
-    def __init__(self, current_event) -> None:
-        #self.current_event = current_event
-        pass
+    def __init__(self) -> None:
+        # Initialize the class variables
+        self.state = "start"
+
+        self.currentEvent = ""
+        self.previousEvent = ""
+
+        self.currentXArray = []
+        self.currentYArray = []
+        self.currentTouchIDArray = []
+
+        self.previousVarXArray = []
+        self.previousVarYArray = []
+        self.previousTouchIDArray = []
+
+        self.touchStartTimeDict = {}
+        self.touchEndTimeDict = {}
+        self.wasThereMovementSinceTouchStart = False
+
+        # TEMPORARY
+        self.touchStartTimeArray = []
+        self.touchEndTimeArray = []
+
 th = EventHandler
 
 def zeroGlobalVars():
