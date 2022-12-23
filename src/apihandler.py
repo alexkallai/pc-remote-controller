@@ -20,7 +20,7 @@ config.read("settings.cfg")
 COORDINATE_MULTIPLIER = float(config["mouse"]["speed_multiplier"])
 DOUBLE_CLICK_TIME_DELAY = float(config["mouse"]["double_click_time_delay"])
 
-class EventHandler:
+class Event:
 
     def __init__(self) -> None:
         # Initialize the class variables
@@ -42,10 +42,10 @@ class EventHandler:
         self.wasThereMovementSinceTouchStart = False
 
         # TEMPORARY
-        self.touchStartTimeArray = []
-        self.touchEndTimeArray = []
+        self.touchStartTime = None
+        self.touchEndTime = None
 
-th = EventHandler
+th = Event()
 
 def zeroGlobalVars():
     #print("LOG: ZEROING GLOBAL VARIABLES")
@@ -67,25 +67,36 @@ def touchEventHandler():
 
     #print("Current event:", currentEvent)
 
+    # Multi-touch not supported in this function
     if (len(th.currentXArray) > 2):
         zeroGlobalVars()
         resetMouseState()
         return
 
     if th.currentEvent == "touchstart":
-        if len(th.touchStartTimeArray) == 0:
-            th.touchStartTimeArray.append( [th.currentTouchIDArray[-1], time.time()] )
-        elif len(th.touchEndTimeArray) == 1 and (time.time()-th.touchStartTimeArray[0][1]) < DOUBLE_CLICK_TIME_DELAY:
+        # Check
+        if th.touchStartTime == None:
+            th.touchStartTime = time.time()
+        elif th.touchEndTime and (time.time()-th.touchStartTime) < DOUBLE_CLICK_TIME_DELAY:
             mouse.press(button='left')
+
+        # End
         th.previousVarXArray = th.currentXArray
         th.previousVarYArray = th.currentYArray
         return
 
         
     elif th.currentEvent == "touchmove":
-        if th.wasThereMovementSinceTouchStart == True:
-            mouse.move(COORDINATE_MULTIPLIER*(th.currentXArray[0]-th.previousVarXArray[0]), COORDINATE_MULTIPLIER*(th.currentYArray[0]-th.previousVarYArray[0]), absolute=False, duration=0)
-            print("DIFF:", th.currentXArray[0]-th.previousVarXArray[0])
+        # Check
+        #if th.wasThereMovementSinceTouchStart == True:
+        mouse.move(
+            COORDINATE_MULTIPLIER*(th.currentXArray[0]-th.previousVarXArray[0]), 
+            COORDINATE_MULTIPLIER*(th.currentYArray[0]-th.previousVarYArray[0]), 
+            absolute=False, 
+            duration=0)
+        #print("DIFF:", th.currentXArray[0]-th.previousVarXArray[0])
+        
+        # End
         th.previousVarXArray = th.currentXArray
         th.previousVarYArray = th.currentYArray
         th.wasThereMovementSinceTouchStart = True
@@ -93,12 +104,11 @@ def touchEventHandler():
 
     # touchend event receives changedtouches array!
     elif th.currentEvent == "touchend":
-            th.touchEndTimeArray = [time.time()]
-            resetMouseState()
-            return
+        th.touchEndTime = [time.time()]
+        resetMouseState()
+        return
 
     elif th.currentEvent == "touchcancel":
-        print("-")
         resetMouseState()
         #wasThereMovementSinceTouchStart = False
         return
@@ -123,40 +133,40 @@ def pressOnKeyboard(inputArray):
 # Keyboard button press handler
 def keyboardButtonHandler():
     global th
-    if th.currentEvent ==  "enter"        : pressOnKeyboard( [Key.enter] )
-    if th.currentEvent ==  "backspace"    : pressOnKeyboard( [Key.backspace ] )
-    if th.currentEvent ==  "delete"       : pressOnKeyboard( [Key.delete] )
-    if th.currentEvent ==  "home"         : pressOnKeyboard( [Key.home] )
-    if th.currentEvent ==  "end"          : pressOnKeyboard( [Key.end] )
-    if th.currentEvent ==  "pageup"       : pressOnKeyboard( [Key.page_up] )
-    if th.currentEvent ==  "pagedown"     : pressOnKeyboard( [Key.page_down] )
-    if th.currentEvent ==  "printscreen"  : pressOnKeyboard( [Key.print_screen] )
-    if th.currentEvent ==  "copy"         : pressOnKeyboard( [Key.ctrl, 'c'] )
-    if th.currentEvent ==  "paste"        : pressOnKeyboard( [Key.ctrl, 'v'] )
-    if th.currentEvent ==  "desktop"      : pressOnKeyboard( [Key.cmd,  'd'] )
-    if th.currentEvent ==  "contextmenu"  : pressOnKeyboard( [Key.menu] )
-    if th.currentEvent ==  "undo"         : pressOnKeyboard( [Key.ctrl, 'z'] )
-    if th.currentEvent ==  "uparrow"      : pressOnKeyboard( [Key.up] )
-    if th.currentEvent ==  "selectall"    : pressOnKeyboard( [Key.ctrl, 'a'] )
-    if th.currentEvent ==  "leftarrow"    : pressOnKeyboard( [Key.left] )
-    if th.currentEvent ==  "downarrow"    : pressOnKeyboard( [Key.down] )
-    if th.currentEvent ==  "rightarrow"   : pressOnKeyboard( [Key.right] )
+    if th.currentEvent == "enter"       : pressOnKeyboard( [Key.enter] )        ; return
+    if th.currentEvent == "backspace"   : pressOnKeyboard( [Key.backspace ] )   ; return
+    if th.currentEvent == "delete"      : pressOnKeyboard( [Key.delete] )       ; return
+    if th.currentEvent == "home"        : pressOnKeyboard( [Key.home] )         ; return
+    if th.currentEvent == "end"         : pressOnKeyboard( [Key.end] )          ; return
+    if th.currentEvent == "pageup"      : pressOnKeyboard( [Key.page_up] )      ; return
+    if th.currentEvent == "pagedown"    : pressOnKeyboard( [Key.page_down] )    ; return
+    if th.currentEvent == "printscreen" : pressOnKeyboard( [Key.print_screen] ) ; return
+    if th.currentEvent == "copy"        : pressOnKeyboard( [Key.ctrl, 'c'] )    ; return
+    if th.currentEvent == "paste"       : pressOnKeyboard( [Key.ctrl, 'v'] )    ; return
+    if th.currentEvent == "desktop"     : pressOnKeyboard( [Key.cmd,  'd'] )    ; return
+    if th.currentEvent == "contextmenu" : pressOnKeyboard( [Key.menu] )         ; return
+    if th.currentEvent == "undo"        : pressOnKeyboard( [Key.ctrl, 'z'] )    ; return
+    if th.currentEvent == "uparrow"     : pressOnKeyboard( [Key.up] )           ; return
+    if th.currentEvent == "selectall"   : pressOnKeyboard( [Key.ctrl, 'a'] )    ; return
+    if th.currentEvent == "leftarrow"   : pressOnKeyboard( [Key.left] )         ; return
+    if th.currentEvent == "downarrow"   : pressOnKeyboard( [Key.down] )         ; return
+    if th.currentEvent == "rightarrow"  : pressOnKeyboard( [Key.right] )        ; return
 
 # Media button press handler
 def mediaButtonHandler():
     global th
-    if th.currentEvent ==  "playpause"     : pressOnKeyboard( [Key.media_play_pause] )
-    if th.currentEvent ==  "escape"        : pressOnKeyboard( [Key.esc] )
-    if th.currentEvent ==  "previous"      : pressOnKeyboard( [Key.media_previous] )
-    if th.currentEvent ==  "fullscreen_yt" : pressOnKeyboard( ['f'] )
-    if th.currentEvent ==  "next"          : pressOnKeyboard( [Key.media_next] )
-    if th.currentEvent ==  "volumeup"      : pressOnKeyboard( [Key.media_volume_up] )
-    if th.currentEvent ==  "mute"          : pressOnKeyboard( [Key.media_volume_mute] )
-    if th.currentEvent ==  "volumedown"    : pressOnKeyboard( [Key.media_volume_down] )
-    if th.currentEvent ==  "open"          : pressOnKeyboard( [Key.ctrl, 'o'] )
-    if th.currentEvent ==  "closeprogram"  : pressOnKeyboard( [Key.alt, Key.f4] )
-    if th.currentEvent ==  "fullscreen"    : pressOnKeyboard( [Key.alt, Key.enter] )
-    if th.currentEvent ==  "changefocus"   : pressOnKeyboard( [Key.alt, Key.tab] )
+    if th.currentEvent ==  "playpause"     : pressOnKeyboard( [Key.media_play_pause] )   ; return
+    if th.currentEvent ==  "escape"        : pressOnKeyboard( [Key.esc] )                ; return
+    if th.currentEvent ==  "previous"      : pressOnKeyboard( [Key.media_previous] )     ; return
+    if th.currentEvent ==  "fullscreen_yt" : pressOnKeyboard( ['f'] )                    ; return
+    if th.currentEvent ==  "next"          : pressOnKeyboard( [Key.media_next] )         ; return
+    if th.currentEvent ==  "volumeup"      : pressOnKeyboard( [Key.media_volume_up] )    ; return
+    if th.currentEvent ==  "mute"          : pressOnKeyboard( [Key.media_volume_mute] )  ; return
+    if th.currentEvent ==  "volumedown"    : pressOnKeyboard( [Key.media_volume_down] )  ; return
+    if th.currentEvent ==  "open"          : pressOnKeyboard( [Key.ctrl, 'o'] )          ; return
+    if th.currentEvent ==  "closeprogram"  : pressOnKeyboard( [Key.alt, Key.f4] )        ; return
+    if th.currentEvent ==  "fullscreen"    : pressOnKeyboard( [Key.alt, Key.enter] )     ; return
+    if th.currentEvent ==  "changefocus"   : pressOnKeyboard( [Key.alt, Key.tab] )       ; return
 
 #Handles the requests
 def api_handler(message):
@@ -164,12 +174,9 @@ def api_handler(message):
     messageDict = message
 
     th.currentEvent = messageDict['eventType']
-    print(messageDict)
+    #print(messageDict)
     # Mousemove events
-    if ( th.currentEvent == "touchstart"  or
-         th.currentEvent == "touchend"    or
-         th.currentEvent == "touchmove"   or
-         th.currentEvent == "touchcancel" ):
+    if  th.currentEvent in ["touchstart", "touchend", "touchmove" , "touchcancel"]:
         th.currentXArray = messageDict['xCoordinateArray'] if "xCoordinateArray" in messageDict else []
         th.currentYArray = messageDict['yCoordinateArray'] if "yCoordinateArray" in messageDict else []
         th.currentTouchIDArray = messageDict['coordinateIdentifier'] if "coordinateIdentifier" in messageDict else []
@@ -178,51 +185,52 @@ def api_handler(message):
         return
 
     # Mouse button events
-    if ( th.currentEvent == "leftclick"   or
-            th.currentEvent == "rightclick"  or
-            th.currentEvent == "midclick"):
+    if th.currentEvent in ["leftclick", "rightclick", "midclick"]:
         mouseButtonHandler()
         return
 
-    # Keyboard button events
+   # Keyboard button events
     if ( 
-            th.currentEvent ==   "enter"        or
-            th.currentEvent ==   "backspace"    or
-            th.currentEvent ==   "delete"       or
-            th.currentEvent ==   "home"         or
-            th.currentEvent ==   "end"          or
-            th.currentEvent ==   "pageup"       or
-            th.currentEvent ==   "pagedown"     or
-            th.currentEvent ==   "printscreen"  or
-            th.currentEvent ==   "copy"         or
-            th.currentEvent ==   "paste"        or
-            th.currentEvent ==   "desktop"      or
-            th.currentEvent ==   "contextmenu"  or
-            th.currentEvent ==   "undo"         or 
-            th.currentEvent ==   "uparrow"      or 
-            th.currentEvent ==   "selectall"    or 
-            th.currentEvent ==   "leftarrow"    or 
-            th.currentEvent ==   "downarrow"    or 
-            th.currentEvent ==   "rightarrow"  
+            th.currentEvent in [
+            "enter",
+            "backspace",
+            "delete",
+            "home",
+            "end",
+            "pageup",
+            "pagedown",
+            "printscreen",
+            "copy",
+            "paste",
+            "desktop",
+            "contextmenu",
+            "undo",
+            "uparrow",
+            "selectall",
+            "leftarrow",
+            "downarrow",
+            "rightarrow"
+            ]
             ):
         keyboardButtonHandler()
         return
 
-
     # Multimedia button events
     if ( 
-            th.currentEvent ==  "playpause"     or
-            th.currentEvent ==  "escape"        or
-            th.currentEvent ==  "previous"      or
-            th.currentEvent ==  "fullscreen_yt" or
-            th.currentEvent ==  "next"          or
-            th.currentEvent ==  "volumeup"      or
-            th.currentEvent ==  "mute"          or
-            th.currentEvent ==  "volumedown"    or
-            th.currentEvent ==  "open"          or
-            th.currentEvent ==  "closeprogram"  or
-            th.currentEvent ==  "fullscreen"    or 
-            th.currentEvent ==  "changefocus"   
+            th.currentEvent in [
+            "playpause",
+            "escape",
+            "previous",
+            "fullscreen_yt",
+            "next",
+            "volumeup",
+            "mute",
+            "volumedown",
+            "open",
+            "closeprogram",
+            "fullscreen",
+            "changefocus"
+            ]
             ):
             mediaButtonHandler()
             return

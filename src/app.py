@@ -26,7 +26,7 @@ def home():
 def api_handler():
     if request.method == "POST":
         postrequest = request.get_json()
-        print(postrequest)
+        #print(postrequest)
         apihandler.api_handler(postrequest)
     # TODO: understand why return is necessary
     return make_response()
@@ -40,4 +40,4 @@ if __name__ == "__main__":
         # Start the tray icon on a separate thread
         threading.Thread(target=trayapp.trayapp.run).start()
     # Then starting the webserver
-    app.run(host=HOST, port=PORT, debug=True)
+    app.run(host=HOST, port=PORT, debug=False)
