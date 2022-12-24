@@ -415,7 +415,7 @@
                     <div class="aboutContainer">
                         <div>
                             <h3>About</h3>
-                            <h4>Web based remote mouse</h4>
+                            <h4>PC remote controller</h4>
                             <h4>Created by: Alex Kallai</h4>
                             <a href="https://github.com/alexkallai/">https://github.com/alexkallai/</a>
                         </div>
@@ -433,8 +433,10 @@
     <script type="text/javascript">
 
         //TAB SCRIPTS
-        function openPage(pageName,elmnt,color) {
+        // TODO why is color used here?
+        function openPage(page_name, element, color) {
         var i, tabcontent, tablinks;
+        // Set all tabcontent element to invisible
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
@@ -443,8 +445,8 @@
         for (i = 0; i < tablinks.length; i++) {
             tablinks[i].style.backgroundColor = "";
         }
-        document.getElementById(pageName).style.display = "block";
-        elmnt.style.backgroundColor = color;
+        document.getElementById(page_name).style.display = "block";
+        element.style.backgroundColor = color;
         }
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
@@ -485,7 +487,7 @@
                 //console.log(toString(event.type))
                 varxArray = []
                 varyArray = []
-        idArray = []
+                idArray = []
                 for (let index = 0; index < event.touches.length; index++){
                     varxArray.push(event.touches[index].clientX)
                     varyArray.push(event.touches[index].clientY)
@@ -495,16 +497,16 @@
                     eventType: event.type,
                     xCoordinateArray: varxArray,
                     yCoordinateArray: varyArray,
-            coordinateIdentifier: idArray
+                    ordinateIdentifier: idArray
                 })
             };
-            
+
             // Touchstart event
             if (event.type == 'touchstart') {
                 //console.log(event)
                 varxArray = []
                 varyArray = []
-        idArray = []
+                idArray = []
                 for (let index = 0; index < event.touches.length; index++){
                     varxArray.push(event.touches[index].clientX)
                     varyArray.push(event.touches[index].clientY)
@@ -514,16 +516,16 @@
                     eventType: event.type,
                     xCoordinateArray: varxArray,
                     yCoordinateArray: varyArray,
-            coordinateIdentifier: idArray
+                    coordinateIdentifier: idArray
                 })
             };
 
             // Touchend event (it has a changedTouches array!!!)
             if (event.type == 'touchend') {
-        console.log(event)
+                console.log(event)
                 varxArray = []
                 varyArray = []
-        idArray = []
+                idArray = []
                 for (let index = 0; index < event.changedTouches.length; index++){
                     varxArray.push(event.changedTouches[index].clientX)
                     varyArray.push(event.changedTouches[index].clientY)
@@ -541,7 +543,7 @@
             if (event.type == 'touchcancel') {
                 varxArray = []
                 varyArray = []
-        idArray = []
+                idArray = []
                 for (let index = 0; index < event.changedTouches.length; index++){
                     varxArray.push(event.changedTouches[index].clientX)
                     varyArray.push(event.changedTouches[index].clientY)
@@ -551,7 +553,7 @@
                     eventType: event.type,
                     xCoordinateArray: varxArray,
                     yCoordinateArray: varyArray,
-            coordinateIdentifier: idArray
+                    ordinateIdentifier: idArray
                 })
             };
             
