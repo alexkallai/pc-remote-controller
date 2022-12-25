@@ -1,8 +1,12 @@
 import pystray
 import PIL.Image
 import sys
+import os
 
-image = PIL.Image.open("src/remote_icon.png")
+bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+path_to_icon = os.path.abspath(os.path.join(bundle_dir, 'remote_icon.png'))
+
+image = PIL.Image.open(path_to_icon)
 icon_hint = "PC remote controller"
 
 def click_handler(icon, item):
