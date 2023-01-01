@@ -38,8 +38,6 @@ class Event:
         self.previousVarYArray = []
         self.previousTouchIDArray = []
 
-        self.touchStartTimeDict = {}
-        self.touchEndTimeDict = {}
         self.wasThereMovementSinceTouchStart = False
 
         # TEMPORARY
@@ -69,16 +67,18 @@ def touchEventHandler():
     #print("Current event:", currentEvent)
 
     # Multi-touch not supported in this function
-    if (len(th.currentXArray) > 2):
+    if (len(th.currentTouchIDArray) > 1):
+        print("RESET")
         zeroGlobalVars()
         resetMouseState()
         return
 
     if th.currentEvent == "touchstart":
+        print("TOUCHSTART")
         # Check
-        if th.touchStartTime == None:
+        if len(th.currentXArray) < 2:
             th.touchStartTime = time.time()
-        elif th.touchEndTime and (time.time()-th.touchStartTime) < DOUBLE_CLICK_TIME_DELAY:
+        elif (time.time() - th.touchEndTime) < DOUBLE_CLICK_TIME_DELAY and (time.time() - th.touchStartTime) < DOUBLE_CLICK_TIME_DELAY:
             mouse.press(button='left')
 
         # End
@@ -88,6 +88,7 @@ def touchEventHandler():
 
         
     elif th.currentEvent == "touchmove":
+        print("TOUCHMOVE")
         # Check
         #if th.wasThereMovementSinceTouchStart == True:
         mouse.move(
@@ -105,11 +106,15 @@ def touchEventHandler():
 
     # touchend event receives changedtouches array!
     elif th.currentEvent == "touchend":
+        print("TOUCHEND")
         th.touchEndTime = [time.time()]
+        if (time.time() - th.touchStartTime) < DOUBLE_CLICK_TIME_DELAY:
+            mouse.click(button='left')
         resetMouseState()
         return
 
     elif th.currentEvent == "touchcancel":
+        print("TOUCHCANCEL")
         resetMouseState()
         #wasThereMovementSinceTouchStart = False
         return
@@ -117,9 +122,9 @@ def touchEventHandler():
 # Mouse related button presses (for actual buttons on the web page)
 def mouseButtonHandler():
     global th
-    if th.currentEvent == "leftclick" :  mouse.click(button='left')
-    if th.currentEvent == "rightclick":  mouse.click(button='right')
-    if th.currentEvent == "midclick"  :  mouse.click(button='middle')
+    if th.currentEvent == "leftclick" :  mouse.click(button='left')   ; return
+    if th.currentEvent == "rightclick":  mouse.click(button='right')  ; return
+    if th.currentEvent == "midclick"  :  mouse.click(button='middle') ; return
 
 # Keypress and key combination presser
 def pressOnKeyboard(inputArray):

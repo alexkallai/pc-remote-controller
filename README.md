@@ -20,10 +20,10 @@ multitouch support (for zoom and gestures) not implemented yet
 ![Example image](https://raw.githubusercontent.com/alexkallai/pc-remote-controller/main/example_images/mouse_page.PNG)
 
 
-### Requirements for Linux:
+### Requirements for running from _source_ on Linux:
 - <= Python 3.9 (was tested on 3.9)
 - Linux requires sudo, because of the input simulations
 
 
-### Requirements for Windows:
-- TODO
+### Requirements for running from _source_ on Windows:
+- Python 3.x
