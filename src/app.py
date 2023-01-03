@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, url_for
+from flask import Flask, render_template, request, make_response
 from configparser import ConfigParser
 import apihandler
 import qrcodeprinter
@@ -27,12 +27,15 @@ def api_handler():
     # TODO: understand why return is necessary
     return make_response()
 
-
-if __name__ == "__main__":
+def main():
     HOST = config["general"]["HOST"]
     PORT = config["general"]["PORT"]
     qrcodeprinter.prepare_qr_code_info(HOST, PORT)
     # Start the tray icon on a separate thread
-    threading.Thread(target=trayapp.trayapp.run).start()
+    tray_app_thread = threading.Thread(target=trayapp.trayapp.run)
+    tray_app_thread.start()
     # Then starting the webserver
     app.run(host=HOST, port=PORT, debug=False)
+
+if __name__ == "__main__":
+    main()
