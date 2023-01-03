@@ -15,9 +15,8 @@ def click_handler(icon, item):
     if str(item) == "Do something":
         print("Did something!")
     if str(item) == "Exit":
-        # TODO if running in a separate thread, the whole process should be stopped
         trayapp.stop()
-        sys.exit()
+        os._exit(1)
 
 # Define menu structure
 menu_structure = pystray.Menu(
